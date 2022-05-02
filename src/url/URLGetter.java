@@ -46,6 +46,7 @@ public class URLGetter {
         ArrayList<String> contents = new ArrayList<>();
         try {
             Scanner scanner = new Scanner(httpConnection.getInputStream());
+
             while (scanner.hasNextLine()) {
                 contents.add(scanner.nextLine());
             }

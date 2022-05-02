@@ -2,6 +2,8 @@ package classfetch;
 
 import java.util.List;
 
+import graph.Graph;
+
 public class Client {
 
     /**
@@ -10,17 +12,23 @@ public class Client {
      */
     public static void main(String[] args) {
 
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\parra\\Downloads\\chromedriver_win32\\chromedriver.exe");
+
         // Gets the list of all courses as PennClass objects
         List<PennClass> list = CourseCatalog.getClasses();
+        
+        Graph g = new Graph();
 
         for (int i = 0; i < list.size(); i++) {
             PennClass p = list.get(i);
+            
+            g.addEdgesForClass(p);
 
             // Prints the name of this class (ex: "NETS 150")
-            System.out.println(p);
+            //System.out.println(p);
 
             // Prints the Penn Course Review URL suffix of this class (ex: "NETS-150")
-//            System.out.println(p.getCourseReviewUrlSuffix());
+            //System.out.println(p.getCourseReviewUrlSuffix());
         }
 
         // Gets the list of all courses as strings (just showing there's a string version too lol)

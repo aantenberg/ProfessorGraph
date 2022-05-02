@@ -1,21 +1,54 @@
 package classfetch;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import url.URLGetter;
 
 public class PennClass {
-
+    private final static String COURSE_REVIEW_URL = "https://penncoursereview.com/course/";
     private final String className;
     private List<String> professors;
+    private final WebDriver driver;
 
     /**
      * Initializes a PennClass object
      * @param className the name of the class (ex: "NETS 150")
      */
-    public PennClass(String className) {
+    public PennClass(String className, WebDriver driver) {
         this.className = className;
         professors = new LinkedList<>();
+        this.driver = driver;
+
+        loadProfessors();
+    }
+
+    /**
+     * Function to scrape penn course review to find the professors who have taught this class
+     * @return void
+     */
+    private void loadProfessors(){
+        try {
+            driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+            driver.get(COURSE_REVIEW_URL + getCourseReviewUrlSuffix());
+    
+            WebElement name_box = driver.findElement(By.className("rt-tbody"));
+    
+            professors = Arrays.asList(name_box.getText().split("\n"));
+        } catch (Exception e) {
+            professors = new ArrayList<String>();
+        }
     }
 
     /**
@@ -57,7 +90,7 @@ public class PennClass {
      * @return The class name in Penn Course Review URL suffix form
      */
     public String getCourseReviewUrlSuffix() {
-        return className.toUpperCase().replace(" ", "-");
+        return className.toUpperCase().replace(" ", "-").replace("Â", "");
     }
 
     @Override

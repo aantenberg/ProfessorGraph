@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
 public class CourseCatalog {
     private final static String COURSE_CATALOG_URL = "https://catalog.upenn.edu/courses/";
     private final static URLGetter url = new URLGetter(COURSE_CATALOG_URL);
@@ -43,6 +46,14 @@ public class CourseCatalog {
      * @return a list of Strings of PennClass objects representing Penn's classes
      */
     private static List getClasses(boolean returnStrings) {
+        WebDriver driver = new ChromeDriver();
+        driver.get("https://penncoursereview.com/course/CIS-411");
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
         List<String> departmentSuffixes = getDepartmentUrlSuffixes();
         String classNamePatternTemplate =
                 "<p class=\"courseblocktitle noindent\"><strong>([^<]*)";
@@ -57,7 +68,7 @@ public class CourseCatalog {
                 if (m.find()) {
                     String[] className = m.group(1).split(" ");
                     classesStr.add(className[0]);
-                    classes.add(new PennClass(className[0]));
+                    classes.add(new PennClass(className[0], driver));
                 }
             }
         }
