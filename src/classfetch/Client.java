@@ -30,6 +30,10 @@ public class Client {
             // Prints the Penn Course Review URL suffix of this class (ex: "NETS-150")
             //System.out.println(p.getCourseReviewUrlSuffix());
         }
+        
+        System.out.println(g.bfsCCs());
+        System.out.println(g.bfsMaxCC());
+        System.out.println(g.findMostBetweennessCentral());
 
         // Gets the list of all courses as strings (just showing there's a string version too lol)
 //        List<String> strings = CourseCatalog.getClassesStr();
