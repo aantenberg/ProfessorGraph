@@ -153,6 +153,10 @@ public class Graph {
     }
     
     public List<String> bfsPath(String start, String end) { //NOTE: this does not restart in another CC if no path is found
+        if (!adjacencyList.containsKey(start) || !adjacencyList.containsKey(end)) {
+            throw new IllegalArgumentException();
+        }
+
         //initialize the tracking data structures
         HashSet<String> visited = new HashSet<String>();
         visited.add(start);
@@ -183,7 +187,7 @@ public class Graph {
                     queue.add(next);
                     
                     //if we have reached the end then exit the loop
-                    if (next == end) {
+                    if (next.equals(end)) {
                         queue.clear();
                         found = true;
                         break;
@@ -312,5 +316,38 @@ public class Graph {
         }
         
         return ccs;
+    }
+
+    private double clusteringCoefficient(String node) {
+        if (!adjacencyList.containsKey(node)) {
+            throw new IllegalArgumentException();
+        }
+        Set<String> neighbors = adjacencyList.get(node);
+
+        // Count will store the number of edges connecting two neighbors of the input node
+        double count = 0;
+        for (String neighbor : neighbors) {
+            for (String neighbor2 : neighbors) {
+                if (!neighbor.equals(neighbor2) &&
+                        adjacencyList.get(neighbor).contains(neighbor2)) {
+                    count++;
+                }
+            }
+        }
+
+        // We need to do this since the above for loop double-counts
+        count /= 2;
+
+        double totalPossibleEdges = 0.5 * neighbors.size() * (neighbors.size() - 1);
+        return count / totalPossibleEdges;
+    }
+
+    public double averageClusteringCoefficient() {
+        Set<String> nodes = adjacencyList.keySet();
+        double clusteringCoefficientSum = 0;
+        for (String node : nodes) {
+            clusteringCoefficientSum += clusteringCoefficient(node);
+        }
+        return clusteringCoefficientSum / nodes.size();
     }
 }

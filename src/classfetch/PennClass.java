@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -36,16 +37,20 @@ public class PennClass {
 
     /**
      * Function to scrape penn course review to find the professors who have taught this class
-     * @return void
      */
-    private void loadProfessors(){
+    private void loadProfessors() {
         try {
             driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
             driver.get(COURSE_REVIEW_URL + getCourseReviewUrlSuffix());
     
             WebElement name_box = driver.findElement(By.className("rt-tbody"));
     
-            professors = Arrays.asList(name_box.getText().split("\n"));
+            List<String> professors = Arrays.asList(name_box.getText().split("\n"));
+
+            // Since professor ratings are contained in the same html elements as professor names,
+            // the above list contains professors and ratings. This expression filters out ratings
+            this.professors = professors.stream().filter(p -> !p.substring(0, 1)
+                    .matches("\\d")).collect(Collectors.toList());
         } catch (Exception e) {
             professors = new ArrayList<String>();
         }
