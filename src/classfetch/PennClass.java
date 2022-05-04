@@ -40,17 +40,19 @@ public class PennClass {
      */
     private void loadProfessors() {
         try {
-            driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+            driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
             driver.get(COURSE_REVIEW_URL + getCourseReviewUrlSuffix());
     
             WebElement name_box = driver.findElement(By.className("rt-tbody"));
     
-            List<String> professors = Arrays.asList(name_box.getText().split("\n"));
+            List<String> professors =Arrays.asList(name_box.getText().split("\n"));
+            professors.removeIf(n -> (n.contains("/")));
 
             // Since professor ratings are contained in the same html elements as professor names,
             // the above list contains professors and ratings. This expression filters out ratings
             this.professors = professors.stream().filter(p -> !p.substring(0, 1)
                     .matches("\\d")).collect(Collectors.toList());
+            
         } catch (Exception e) {
             professors = new ArrayList<String>();
         }

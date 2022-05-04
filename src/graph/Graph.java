@@ -14,10 +14,16 @@ import classfetch.PennClass;
 public class Graph {
     private Map<String, Set<String>> adjacencyList;
     
+    /**
+     * Construct an empty graph
+     */
     public Graph() {
         adjacencyList = new HashMap<String, Set<String>>();
     }
     
+    /**
+     * add an edge to a graph, will create nodes if they don't already exists and it ensures no duplicates
+     */
     public void addEdge(String first, String second) {
         if(!this.adjacencyList.containsKey(first)) {
             this.adjacencyList.put(first, new HashSet<String>());
@@ -31,6 +37,9 @@ public class Graph {
         this.adjacencyList.get(second).add(first);
     }
     
+    /**
+     * Add edges between all professors who taught a class
+     */
     public void addEdgesForClass(PennClass c) {
         List<String> professors = c.getProfessors();
         
@@ -41,6 +50,9 @@ public class Graph {
         }
     }
     
+    /**
+     * Get the number of connected components using BFS
+     */
     public int bfsCCs() {
         
         //initialize the tracking data structures
@@ -86,6 +98,9 @@ public class Graph {
         return ccCount;
     }
     
+    /**
+     * Get the size of the largest CC
+     */
     public int bfsMaxCC() {
         
         //initialize the tracking data structures
@@ -130,17 +145,16 @@ public class Graph {
                 maxCC = curCC;
             }
             
-            System.out.println("Cur CC: " + curCC);
-            
             curCC = 0;
         }
-        
-        System.out.println("Size : " + adjacencyList.size());
         
         //if we have found the node then return the path we found
         return maxCC;
     }
     
+    /**
+     * Helper function to find a node in a cc we haven't yet visited
+     */
     private String getNextUnvisited(Set<String> visited) {
         Iterator<String> iter = adjacencyList.keySet().iterator();
         
@@ -152,6 +166,9 @@ public class Graph {
         return "";
     }
     
+    /**
+     * Try to find a path between start and end, returning null if none exists
+     */
     public List<String> bfsPath(String start, String end) { //NOTE: this does not restart in another CC if no path is found
         if (!adjacencyList.containsKey(start) || !adjacencyList.containsKey(end)) {
             throw new IllegalArgumentException();
@@ -204,6 +221,9 @@ public class Graph {
         return backtrack(parents, end);
     }
     
+    /**
+     * Helper method for pathfinding
+     */
     private List<String> backtrack(Map<String, String> parents, String ending) {
         LinkedList<String> ret = new LinkedList<String>();
         
@@ -218,6 +238,9 @@ public class Graph {
         return ret;
     }
     
+    /**
+     * Find the name of the person who is the most betweenness central
+     */
     public String findMostBetweennessCentral() {
         HashMap<String, Integer> ccs = getCCs();
         
@@ -243,7 +266,9 @@ public class Graph {
             while(iter.hasNext()) {
                 String next = iter.next();
                 
-                //if(ccs.get(next) != ccs.get(curr)) continue;
+                if(visited.contains(next)) continue;
+                
+                if(ccs.get(next) != ccs.get(curr)) continue;
                 
                 List<String> path = bfsPath(curr, next);
                 
@@ -254,7 +279,7 @@ public class Graph {
                 }
             }
             
-            getNextUnvisited(visited);
+            curr = getNextUnvisited(visited);
         }
         
         int max = 0;
@@ -274,6 +299,56 @@ public class Graph {
         return maxString;
     }
     
+    /**
+     * Find the betweenness for a specific professor (in terms of the number of shortest paths passing through them
+     */
+    public int findCentralityForProfessor(String prof) {
+        HashMap<String, Integer> ccs = getCCs();
+        
+        Set<String> visited = new HashSet<String>();
+        HashMap<String, Integer> betweenness = new HashMap<String, Integer>();
+        
+        Iterator<String> firstIter = this.adjacencyList.keySet().iterator();
+        
+        while(firstIter.hasNext()) {
+            String s = firstIter.next();
+            
+            betweenness.put(s, 0);
+        }
+        
+        
+        String curr = getNextUnvisited(visited);
+        
+        while(curr.length() > 0) {
+            visited.add(curr);
+            
+            Iterator<String> iter = this.adjacencyList.keySet().iterator();
+            
+            while(iter.hasNext()) {
+                String next = iter.next();
+                
+                if(visited.contains(next)) continue;
+                
+                if(ccs.get(next) != ccs.get(curr)) continue;
+                
+                List<String> path = bfsPath(curr, next);
+                
+                if(path == null) continue;
+                
+                for (String i : path) {
+                    betweenness.put(i, betweenness.get(i) + 1);
+                }
+            }
+            
+            curr = getNextUnvisited(visited);
+        }
+        
+        return betweenness.get(prof);
+    }
+    
+    /**
+     * Get connected components (returned as a map from professor to their CC number)
+     */
     private HashMap<String, Integer> getCCs(){
         //initialize the tracking data structures
         HashSet<String> visited = new HashSet<String>();
@@ -318,7 +393,10 @@ public class Graph {
         return ccs;
     }
 
-    private double clusteringCoefficient(String node) {
+    /**
+     * Find clustering coefficient of a professor
+     */
+    public double clusteringCoefficient(String node) {
         if (!adjacencyList.containsKey(node)) {
             throw new IllegalArgumentException();
         }
@@ -339,9 +417,14 @@ public class Graph {
         count /= 2;
 
         double totalPossibleEdges = 0.5 * neighbors.size() * (neighbors.size() - 1);
+        
+        if(totalPossibleEdges == 0) return 1;
         return count / totalPossibleEdges;
     }
 
+    /**
+     * Find average clustering coefficient of the graph
+     */
     public double averageClusteringCoefficient() {
         Set<String> nodes = adjacencyList.keySet();
         double clusteringCoefficientSum = 0;

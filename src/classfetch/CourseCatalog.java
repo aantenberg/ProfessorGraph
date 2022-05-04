@@ -50,11 +50,12 @@ public class CourseCatalog {
         }
         List<PennClass> classes = new LinkedList<>();
         List<String> departmentSuffixes = getDepartmentUrlSuffixes();
+        //List<String> departmentSuffixes = new ArrayList<String>();
+        //departmentSuffixes.add("cis");
         String classNamePatternTemplate =
                 "<p class=\"courseblocktitle noindent\"><strong>([^<]*)";
         Pattern classNamePattern = Pattern.compile(classNamePatternTemplate);
         for (int i = 0; i < departmentSuffixes.size(); i++) {
-            if(i > 0) break;
             System.out.print('\r');
             System.out.print("Getting " + departmentSuffixes.get(i) + " classes...");
             URLGetter departmentURL = new URLGetter(COURSE_CATALOG_URL + departmentSuffixes.get(i));

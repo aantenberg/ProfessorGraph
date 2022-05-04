@@ -31,9 +31,18 @@ public class Client {
             //System.out.println(p.getCourseReviewUrlSuffix());
         }
         
+        System.out.println("CC num:");
         System.out.println(g.bfsCCs());
+        System.out.println("Largest CC:");
         System.out.println(g.bfsMaxCC());
+        System.out.println("Avg Clustering");
+        System.out.println(g.averageClusteringCoefficient());
+        System.out.println("Clustering for Swap");
+        System.out.println(g.clusteringCoefficient("Swapneel Sheth"));
+        System.out.println("Most Central Person");
         System.out.println(g.findMostBetweennessCentral());
+        System.out.println("Centrality of Swap");
+        System.out.println(g.findCentralityForProfessor("Swapneel Sheth"));
 
         // Gets the list of all courses as strings (just showing there's a string version too lol)
 //        List<String> strings = CourseCatalog.getClassesStr();
