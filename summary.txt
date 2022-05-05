@@ -1,20 +1,19 @@
 ProfessorGraph:
 
 Our project is a combination between implementation and empirical analysis. 
-We scrape the penn course catalog to get a list of courses and then we 
+We scrape the penn course catalog to get a list of courses, and then we
 create a graph where every professor is a node and there is an edge between
 two professors if they have taught the same class. We then analyze this graph 
 to find a variety of interesting information, such as the clustering 
 average coefficient, the professor with the most betweenness centrality,
-and the size of the largest connected component. For TAs to run our project,
-please look in CoureCatalog.java lines 52-54. Uncomment the lines that set 
-department suffixes to a list of only CIS, which will allow the program to 
-run much faster (it takes a couple hours to scrape the data from penn course 
-review). Additionally, this project requires an installation of ChromeDriver
+and the size of the largest connected component.
+Additionally, this project requires an installation of ChromeDriver
 that is compatible with your OS and specific chrome system, as well as the 
 inclusion of the selenium drivers in the Java classpath (the steps for this
 are different for each IDE). Selenium was necessary for this project as 
-we need to wait for penn course review to load before accessing the HTML. 
+we need to wait for penn course review to load before accessing the HTML.
+Make sure to change the filepath on line 17 of Client.java to the filepath
+of chromedriver on your computer.
 
 Work Breakdown: 
 
