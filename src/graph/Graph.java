@@ -169,7 +169,8 @@ public class Graph {
     /**
      * Try to find a path between start and end, returning null if none exists
      */
-    public List<String> bfsPath(String start, String end) { //NOTE: this does not restart in another CC if no path is found
+    public List<String> bfsPath(String start, String end) {
+        //NOTE: this does not restart in another CC if no path is found
         if (!adjacencyList.containsKey(start) || !adjacencyList.containsKey(end)) {
             throw new IllegalArgumentException();
         }
@@ -432,5 +433,9 @@ public class Graph {
             clusteringCoefficientSum += clusteringCoefficient(node);
         }
         return clusteringCoefficientSum / nodes.size();
+    }
+
+    public Set<String> getAllNodes() {
+        return adjacencyList.keySet();
     }
 }

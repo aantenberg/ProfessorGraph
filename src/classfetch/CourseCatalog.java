@@ -50,21 +50,23 @@ public class CourseCatalog {
         }
         List<PennClass> classes = new LinkedList<>();
         List<String> departmentSuffixes = getDepartmentUrlSuffixes();
-        //List<String> departmentSuffixes = new ArrayList<String>();
-        //departmentSuffixes.add("cis");
         String classNamePatternTemplate =
                 "<p class=\"courseblocktitle noindent\"><strong>([^<]*)";
         Pattern classNamePattern = Pattern.compile(classNamePatternTemplate);
         for (int i = 0; i < departmentSuffixes.size(); i++) {
-            System.out.print('\r');
-            System.out.print("Getting " + departmentSuffixes.get(i) + " classes...");
-            URLGetter departmentURL = new URLGetter(COURSE_CATALOG_URL + departmentSuffixes.get(i));
-            ArrayList<String> page = departmentURL.getContents();
-            for (String line : page) {
-                Matcher m = classNamePattern.matcher(line);
-                if (m.find()) {
-                    String[] className = m.group(1).split(" ");
-                    classes.add(new PennClass(className[0], driver));
+
+            // Change this to change the department, or remove it altogether to run on all classes
+            if(departmentSuffixes.get(i).equalsIgnoreCase("cis")) {
+                System.out.print('\r');
+                System.out.print("Getting " + departmentSuffixes.get(i) + " classes...");
+                URLGetter departmentURL = new URLGetter(COURSE_CATALOG_URL + departmentSuffixes.get(i));
+                ArrayList<String> page = departmentURL.getContents();
+                for (String line : page) {
+                    Matcher m = classNamePattern.matcher(line);
+                    if (m.find()) {
+                        String[] className = m.group(1).split(" ");
+                        classes.add(new PennClass(className[0], driver));
+                    }
                 }
             }
         }

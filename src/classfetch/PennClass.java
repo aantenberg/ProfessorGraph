@@ -6,16 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-
-import url.URLGetter;
 
 public class PennClass {
     private final static String COURSE_REVIEW_URL = "https://penncoursereview.com/course/";
@@ -54,7 +49,7 @@ public class PennClass {
                     .matches("\\d")).collect(Collectors.toList());
             
         } catch (Exception e) {
-            professors = new ArrayList<String>();
+            professors = new ArrayList<>();
         }
     }
 

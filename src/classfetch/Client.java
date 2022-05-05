@@ -1,6 +1,7 @@
 package classfetch;
 
 import java.util.List;
+import java.util.Scanner;
 
 import graph.Graph;
 
@@ -12,7 +13,8 @@ public class Client {
      */
     public static void main(String[] args) {
 
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\parra\\Downloads\\chromedriver_win32\\chromedriver.exe");
+        // Change the filepath below to the filepath of your chrome driver
+        System.setProperty("webdriver.chrome.driver", "/Users/andrewantenberg/Downloads/chromedriver");
 
         // Gets the list of all courses as PennClass objects
         List<PennClass> list = CourseCatalog.getClasses();
@@ -23,12 +25,6 @@ public class Client {
             PennClass p = list.get(i);
             
             g.addEdgesForClass(p);
-
-            // Prints the name of this class (ex: "NETS 150")
-            //System.out.println(p);
-
-            // Prints the Penn Course Review URL suffix of this class (ex: "NETS-150")
-            //System.out.println(p.getCourseReviewUrlSuffix());
         }
         
         System.out.println("CC num:");
@@ -39,12 +35,22 @@ public class Client {
         System.out.println(g.averageClusteringCoefficient());
         System.out.println("Clustering for Swap");
         System.out.println(g.clusteringCoefficient("Swapneel Sheth"));
-        System.out.println("Most Central Person");
-        System.out.println(g.findMostBetweennessCentral());
+
+        // This takes a long time, so it is commented out. Feel free to uncomment if interested!
+//        System.out.println("Most Central Person");
+//        System.out.println(g.findMostBetweennessCentral());
         System.out.println("Centrality of Swap");
         System.out.println(g.findCentralityForProfessor("Swapneel Sheth"));
-
-        // Gets the list of all courses as strings (just showing there's a string version too lol)
-//        List<String> strings = CourseCatalog.getClassesStr();
+        System.out.println(g.getAllNodes());
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Type the names of two professors (separated by a comma and space) to " +
+                "find the shortest path between them! Please type the professor's name exactly " +
+                "as it appears above.");
+        String[] profs = scanner.nextLine().split(", ");
+        try {
+            System.out.println(g.bfsPath(profs[0], profs[1]));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Professor is not in the graph.");
+        }
     }
 }
